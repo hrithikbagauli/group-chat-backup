@@ -11,13 +11,13 @@
     <link rel="stylesheet" href="../css/signup.css">
 </head>
 
-<body style="background: linear-gradient(to right, rgb(49, 195, 231), rgb(30, 252, 137));">
+<body style="background: linear-gradient(to right, rgb(67, 208, 218), rgb(30, 134, 252));">
     <section>
         <h1 class="text-center text-white">Welcome!</h1>
-        <div class="container">
+        <div class="container active">
             <div class="row d-flex justify-content-center align-items-center">
                 <div class="col-lg-12 col-xl-11">
-                    <div class="card text-info" style="border-radius: 25px; box-shadow: 0px 0px 18px rgb(12, 221, 249);">
+                    <div class="card text-info" style="border-radius: 25px; box-shadow: 0px 0px 18px rgb(255, 255, 255);">
                         <div class="card-body p-md-5">
                             <div class="row justify-content-center">
                                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
@@ -26,13 +26,12 @@
                                     <form id="myform" class="mx-1 mx-md-4">
                                         <div class="d-flex flex-row align-items-center mb-0">
                                             <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                                            <div id="alert_div" class="form-outline flex-fill mb-4 alert text-center"
-                                                style="display: none;"></div>
+                                            <div id="alert_div" class="form-outline flex-fill mb-4 alert text-center hide"></div>
                                         </div>
                                         <div class="d-flex flex-row align-items-center mb-1">
                                             <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <input type="text" id="username" name="username" class="form-control"
+                                                <input type="text" name="username" class="form-control"
                                                     placeholder="Your Name" />
                                                 <label class="form-label" for="username"></label>
                                             </div>
@@ -41,7 +40,7 @@
                                         <div class="d-flex flex-row align-items-center mb-1">
                                             <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <input type="email" id="email" name="email" class="form-control"
+                                                <input type="email" name="email" class="form-control"
                                                     placeholder="Your Email" />
                                                 <label class="form-label" for="email"></label>
                                             </div>
@@ -50,17 +49,17 @@
                                         <div class="d-flex flex-row align-items-center mb-1">
                                             <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <input type="tel" id="phone" name="phone" class="form-control"
-                                                    placeholder="Your Phone No." />
-                                                <label class="form-label" for="email"></label>
+                                                <input type="tel" name="phone" class="form-control"
+                                                    title="fsdfsdf" minlength="10" maxlength="10" placeholder="Your Phone No."/>
+                                                <label class="form-label" for="phone"></label>
                                             </div>
                                         </div>
 
                                         <div class="d-flex flex-row align-items-center mb-1">
                                             <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <input type="password" id="password" name="password"
-                                                    class="form-control" placeholder="Your Password" />
+                                                <input type="password" name="password"
+                                                    minlength="6" class="form-control" placeholder="Your Password" />
                                                 <label class="form-label" for="password"></label>
                                             </div>
                                         </div>
