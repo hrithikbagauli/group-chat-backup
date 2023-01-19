@@ -23,7 +23,10 @@ dotenv.config();
 // app.use(morgan('combined', {stream: accessLogStream}));
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+app.use(cors({
+  origin: 'null', 
+  methods: ["GET", "POST"]
+}));
 app.use(userRoutes);
 
 sequelize

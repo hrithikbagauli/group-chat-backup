@@ -35,6 +35,7 @@ myform.addEventListener('submit', function (e) {
                 }, 1000);
             })
             .catch((res) => {
+                console.log(res)
                 alert_div.innerHTML = 'This user already exists!'
                 alert_div.classList.add('alert-danger');
                 alert_div.classList.toggle('hide');
