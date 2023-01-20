@@ -27,7 +27,7 @@ myform.addEventListener('submit', function (e) {
                 }, 2000);
                 localStorage.setItem('token', res.data.token);
                 localStorage.setItem('username', res.data.username);
-                // window.location.href = "file:///C:/Users/hrith/Desktop/Practice/front-end/html/expense_tracker.html";
+                window.location.href = "../html/chat.html";
             })
             .catch(err => {
                 alert_div.innerHTML = err.response.data.message;

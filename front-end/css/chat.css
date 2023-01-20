@@ -1,0 +1,77 @@
+*{  
+    /* border: 2px solid black; */
+    padding: 10px;
+}
+
+html{
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgb(67, 208, 218), rgb(5, 105, 219));
+}
+
+.user_area{
+    border: 2px solid red;
+}
+
+.message{
+    border-radius: 50px;
+    border: 2px solid rgb(202, 196, 196);
+    background-color: white;
+}
+
+.message_area{
+    background-image: url("./images/background_img.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-left: 2px solid rgb(202, 196, 196);
+    border-top-right-radius: 4px;
+}
+
+h3{
+    border-bottom: 2px solid rgb(202, 196, 196);
+}
+
+ul{
+    margin: 0;
+    padding: 0;
+    /* border-right: 2px solid rgb(202, 196, 196); */
+}
+
+.online{
+    color: rgb(15, 227, 15);
+}
+
+li{
+    list-style-type: none;
+    border-bottom: 2px solid rgb(202, 196, 196);
+}
+
+.bg-silver{
+    background-color: rgb(240,242,245);
+}
+
+.bg-white{
+    background-color: white;
+}
+
+.sendbtn{
+    font-size: 25px;
+}
+
+@media (max-width: 600px) {
+    *{
+        font-size: 10px;
+    }
+    .sendbtn{
+        font-size: 20px;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+}
+
+
