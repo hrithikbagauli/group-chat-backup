@@ -4,7 +4,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
+const messageRoutes = require('./routes/message');
 const User = require('./models/user');
+const Message = require('./models/message');
 // const forgotPasswordRequests = require('./models/forgotPasswordRequests');
 // const helmet = require('helmet');
 // const morgan = require('morgan');
@@ -28,6 +30,10 @@ app.use(cors({
   methods: ["GET", "POST"]
 }));
 app.use(userRoutes);
+app.use(messageRoutes);
+
+User.hasMany(Message);
+Message.belongsTo(User);
 
 sequelize
 .sync()

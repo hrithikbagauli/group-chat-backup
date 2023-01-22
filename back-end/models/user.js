@@ -26,6 +26,10 @@ const User = sequelize.define('user', {
     type: Sequelize.STRING,
     unique: true,
     allowNull: false
+  },
+  online:{
+    type: Sequelize.BOOLEAN,
+    allowNull: false
   }
 });
 

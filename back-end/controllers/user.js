@@ -10,9 +10,10 @@ exports.postUserSignup = (req, res, next) => {
       throw new Error(JSON.stringify(err));
     }
     try {
-      await User.create({ name: req.body.name, email: req.body.email, password: hash, phone: req.body.phone })
+      await User.create({ name: req.body.name, email: req.body.email, password: hash, phone: req.body.phone, online: false})
       res.status(201).json({ success: true });
     } catch (err) {
+      console.log(err);
       res.status(400).json({ success: false, message: err });
     }
   })
@@ -20,6 +21,8 @@ exports.postUserSignup = (req, res, next) => {
 
 exports.postUserLogin = async (req, res, next) => {
   try {
+    User.update({online: true},
+      {where: {email: req.body.email}});
     const user = await User.findAll({ where: { email: req.body.email } });
 
     if (user.length > 0) {
@@ -39,8 +42,14 @@ exports.postUserLogin = async (req, res, next) => {
       res.status(404).json({ success: false, message: "This user doesn't exist!" });
     }
   } catch (err) {
+    console.log(err)
     res.status(500).json({ success: false, message: "Something went wrong!" });
   }
+}
+
+exports.getOnlineUsers = async(req, res, next)=>{
+  const users = await User.findAll({where: {online: true}, attributes: ['name']});
+  res.json(users);
 }
 
 function generateToken(id, user) {

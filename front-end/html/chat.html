@@ -13,35 +13,53 @@
 
 <body>
     <div class="w-100 h-100">
-        <div class="w-100 h-100 d-flex justify-content-between p-2">
+        <div class="main-container w-100 h-100 d-flex justify-content-between p-0">
             <div class="w-25 h-100 bg-white rounded-start">
                 <ul class="w-100 h-100 bg-white">
-                    <h3 class="text-center">Online users</h3>
-                    <!-- <li><span class="online">⬤</span>onwe</li>
-                    <li><span class="online">⬤</span>onwe</li>
-                    <li><span class="online">⬤</span>onwe</li>
-                    <li><span class="online">⬤</span>onwe</li>
-                    <li><span class="online">⬤</span>onwe</li>
-                    <li><span class="online">⬤</span>onwe</li>
-                    <li><span class="online">⬤</span>onwe</li> -->
+                    <!-- <h3 class="text-center display-6">Online users</h3>
+                    <li><span class="online">⬤</span>Jack</li> -->
                 </ul>
             </div>
-            <div class="d-flex align-items-start flex-column w-100 h-100 p-0">
-                <div class="message_area d-flex justify-content-center w-100 h-100">
+            <div class="w-100 h-100 p-0">
+                <div class="message_area w-100 h-100 parent rounded-end pt-1">
+                    <div id="joined" class="top w-100 p-0 m-0">
+                        <!-- <div class="text-center p-0"><span class="badge fw-normal bg-secondary">Hrithik joined</span></div> -->
+                    </div>
+
+                    <div id="message_div" class="middle p-0 mt-2">
+                        <!-- <div class=" d-flex justify-content-start p-0 w-100 mt-2">
+                            <span class="wrap bg-light rounded pb-0">
+                                <div class="p-0 fw-bold"><span class="p-0">ROSS GELLER</span></div>
+                                Hi, I'm Ross. How are you Hrithik? sdfsdfsdf sdf sdfsdfsdf sdfsdfsd sdf sdfsdf sdfs sdfsdfs df sdf sdfsdf sdf sdfsd sdfsd fsdf sdfs dfsdf sdf sdfsd fsdf sdf sdfsdf sdf sdfsd fsd fsdfsdf sdfsdf sdfsd sdf sdf sdf sd fsdf sdfs dfsd sdf sdf sdfsd fsd fsdf 
+                                <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">1:21</span></div>
+                            </span>
+                        </div>
+                        
+                        <div class=" d-flex p-0 w-100 justify-content-end">
+                            <span class="wrap bg-primary text-white my-2 pb-0 rounded">
+                                <div class="p-0 fw-bold text-white"><span class="p-0">YOU</span></div>
+                                Hi Ross, I'm Hrithik sdf sdfsd sdfsdf sfsd fsnsjdnfjsd bfjsbdjf sdj sjdfnjsdnf jsnd fs.
+                                <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">1:21</span></div>
+                            </span>
+                        </div> -->
+                    </div>
+
+                    <div class="w-100">
+                        <form id="myform" class="bottom w-100 d-flex justify-content-between" style="border-bottom-right-radius: 4px;">
+                            <input class="message w-100 px-5" placeholder="Write something here..." type="text" name="message">
+                            <input class="btn btn-primary ms-2 border-0 sendbtn" type="submit" value="➣">
+                        </form>
+                    </div>
                 </div>
-                <form class="bg-silver w-100 d-flex justify-content-between border-0" style="border-bottom-right-radius: 4px;">
-                    <input class="message w-100 px-5" placeholder="Write something here..." type="text" name="message">
-                    <input class="btn btn-primary ms-2 rounded-circle border-0 sendbtn" type="submit" value="➣">
-                </form>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-    <script src="../js/login.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../js/chat.js"></script>
 </body>
 
 </html>
