@@ -1,0 +1,26 @@
+.gradient-custom-4 {
+    background: linear-gradient(to right, rgb(67, 208, 218), rgb(30, 171, 252))
+}
+
+.hide{
+    display: none;
+}
+
+h1{
+    padding-top: 20px;
+    font-size: 50px;
+}
+
+.container{
+    padding: 2rem;
+}
+
+@media (max-width: 600px) {
+    * {
+        font-size: 10px;
+    }
+
+    h1{
+        font-size: 20px;
+    }
+}

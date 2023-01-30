@@ -14,11 +14,13 @@ exports.postSendMessage = async (req, res, next) => {
 }
 
 exports.getMessages = async (req, res, next) => {
-    const last_message_id = 0;
-    if(last_message_id){
-        last_message_id = req.query.id;
+    let last_message_id = 0;
+    if(req.query.id != 'undefined'){
+        last_message_id = parseInt(req.query.id);
     }
-    // console.log('00000000000000000000000000000000000000000000000000000000',last_message_id);
+
+    console.log(last_message_id)
+    console.log(typeof(last_message_id))
     try {
         const messages = await Message.findAll({
             where: {

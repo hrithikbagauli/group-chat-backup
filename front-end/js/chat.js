@@ -4,6 +4,9 @@ const message_input = document.querySelector('.message');
 const message_div = document.getElementById('message_div');
 let token = localStorage.getItem('token');
 
+if (!localStorage.getItem('messages')) {
+    localStorage.setItem('messages', JSON.stringify([]));
+}
 document.addEventListener('DOMContentLoaded', function (e) {
     setInterval(async () => {
         try {
@@ -17,18 +20,44 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 div.innerHTML = content;
                 joined_div.append(div);
             }
+
+            message_div.replaceChildren();
+            let messages = JSON.parse(localStorage.getItem('messages'));
+            for (let i = 0; i < messages.length; i++) {
+                const div = document.createElement('div');
+                let time = convertTime(messages[i].createdAt);
+                if (messages[i].user.name == localStorage.getItem('username')) {
+                    div.classList.add('d-flex', 'p-0', 'w-100', 'justify-content-end', 'pe-2')
+                    div.innerHTML =
+                        `<span class="wrap bg-primary text-white my-2 pb-0 rounded">
+                ${messages[i].message}
+                <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">${time}</span></div>
+                </span>`
+                }
+                else {
+                    div.classList.add('d-flex', 'justify-content-start', 'p-0', 'w-100', 'mt-2');
+                    div.innerHTML =
+                        `<span class="wrap bg-light rounded pb-0">
+                <div class="p-0 fw-bold"><span class="p-0">${messages[i].user.name}</span></div>
+                ${messages[i].message} 
+                <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">${time}</span></div>
+                </span>`
+                }
+                message_div.append(div);
+            }
         } catch (err) {
             console.log(err)
         }
-    }, 1000);
+    }, 100);
 })
 
 myform.addEventListener('submit', async function (e) {
     e.preventDefault();
     try {
         if (message_input.value != '') {
-            await axios.post('http://localhost:4000/send-message', { message: message_input.value }, { headers: { Authorization: token } })
+            await axios.post('http://localhost:4000/send-message', { message: message_input.value }, { headers: { Authorization: token } });
             getMessages();
+            updateScroll();
             message_input.value = '';
         }
     } catch (err) {
@@ -36,32 +65,27 @@ myform.addEventListener('submit', async function (e) {
     }
 })
 
+
+
 async function getMessages() {
     try {
-        const messages = await axios.get(`http://localhost:4000/get-messages`, { headers: { Authorization: token } });
-        message_div.replaceChildren();
-        for (let i = 0; i < messages.data.length; i++) {
-            const div = document.createElement('div');
-            let time = convertTime(messages.data[i].createdAt);
-            if (messages.data[i].user.name == localStorage.getItem('username')) {
-                div.classList.add('d-flex', 'p-0', 'w-100', 'justify-content-end', 'pe-2')
-                div.innerHTML =
-                    `<span class="wrap bg-primary text-white my-2 pb-0 rounded">
-                ${messages.data[i].message}
-                <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">${time}</span></div>
-                </span>`
-            }
-            else {
-                div.classList.add('d-flex', 'justify-content-start', 'p-0', 'w-100', 'mt-2');
-                div.innerHTML =
-                    `<span class="wrap bg-light rounded pb-0">
-                <div class="p-0 fw-bold"><span class="p-0">${messages.data[i].user.name}</span></div>
-                ${messages.data[i].message} 
-                <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">${time}</span></div>
-                </span>`
-            }
-            message_div.append(div);
+        let last_message_id;
+        let old_messages = JSON.parse(localStorage.getItem('messages'));
+        if (old_messages.length > 0) {
+            last_message_id = old_messages[old_messages.length - 1].id;
         }
+        if (old_messages.length > 10) {
+            for (let i = 0; i < old_messages.length / 2; i++) {
+                old_messages.shift();
+                localStorage.setItem('messages', JSON.stringify(old_messages));
+            }
+        }
+        const result = await axios.get(`http://localhost:4000/get-messages?id=${last_message_id}`, { headers: { Authorization: token } });
+        if (result.data.length > 0) {
+            let new_messages = old_messages.concat(result.data);
+            localStorage.setItem('messages', JSON.stringify(new_messages));
+        }
+        // console.log(JSON.parse(localStorage.getItem('messages')));
     } catch (err) {
         console.log(err);
     }
@@ -80,3 +104,6 @@ function convertTime(time) {
     return `${hour}${minutes} ${time_indicator}`;
 }
 
+function updateScroll() {
+    message_div.scrollTop = message_div.scrollHeight;
+}

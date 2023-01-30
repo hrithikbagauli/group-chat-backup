@@ -1,0 +1,121 @@
+* {
+    /* border: 2px solid black; */
+    padding: 10px;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgb(67, 208, 218), rgb(5, 105, 219));
+    font-family: 'bs-font-sans-serif', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.main-container {
+    box-shadow: 0px 0px 10px 6px rgba(106, 109, 106, 0.336);
+}
+
+.wrap {
+    max-width: 75%;
+    word-wrap: break-word;
+}
+
+.message {
+    border-radius: 50px;
+    border: 0;
+    background-color: white;
+}
+
+.message:focus {
+    outline: 2px solid rgb(125, 128, 132);
+}
+
+.message_area {
+    background-image: url("./images/background_img.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* border-left: 2px solid rgb(202, 196, 196); */
+    border-top-right-radius: 4px;
+}
+
+h3 {
+    border-bottom: 2px solid rgb(202, 196, 196);
+}
+
+form {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.bg-silver {
+    background-color: rgb(240, 242, 245);
+}
+
+.bg-white {
+    background-color: white;
+}
+
+.sendbtn {
+    font-size: 25px;
+    border-radius: 50%;
+}
+
+.parent {
+    display: flex;
+    flex-direction: column;
+}
+
+.top {
+    align-self: flex-start;
+}
+
+.middle {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.bottom {
+    align-self: flex-end;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: white; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.559); 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.63); 
+  }
+
+@media (max-width: 1100px) {
+    * {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    * {
+        font-size: 10px;
+    }
+
+    .sendbtn {
+        font-size: 20px;
+        padding-right: 7px;
+        padding-left: 7px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}

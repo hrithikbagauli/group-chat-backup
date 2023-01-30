@@ -5,6 +5,8 @@ const cors = require('cors');
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
 const messageRoutes = require('./routes/message');
+const passwordRoutes = require('./routes/password');
+const forgotPasswordRequests = require('./models/forgotPasswordRequests');
 const User = require('./models/user');
 const Message = require('./models/message');
 // const forgotPasswordRequests = require('./models/forgotPasswordRequests');
@@ -31,9 +33,13 @@ app.use(cors({
 }));
 app.use(userRoutes);
 app.use(messageRoutes);
+app.use('/password', passwordRoutes);
 
 User.hasMany(Message);
 Message.belongsTo(User);
+
+User.hasMany(forgotPasswordRequests);
+forgotPasswordRequests.belongsTo(User);
 
 sequelize
 .sync()
