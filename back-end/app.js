@@ -9,7 +9,8 @@ const passwordRoutes = require('./routes/password');
 const forgotPasswordRequests = require('./models/forgotPasswordRequests');
 const User = require('./models/user');
 const Message = require('./models/message');
-// const forgotPasswordRequests = require('./models/forgotPasswordRequests');
+const Group = require('./models/group');
+const UserGroup = require('./models/userGroup');
 // const helmet = require('helmet');
 // const morgan = require('morgan');
 const fs = require('fs');
@@ -40,6 +41,12 @@ Message.belongsTo(User);
 
 User.hasMany(forgotPasswordRequests);
 forgotPasswordRequests.belongsTo(User);
+
+Group.hasMany(Message);
+Message.belongsTo(Group);
+
+Group.belongsToMany(User, {through: UserGroup});
+User.belongsToMany(Group, {through: UserGroup});
 
 sequelize
 .sync()
