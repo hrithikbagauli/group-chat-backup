@@ -71,6 +71,13 @@ form {
 
 .top {
     align-self: flex-start;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.top div{
+    background-color: rgba(0, 0, 0, 0.242);
 }
 
 .middle {
@@ -100,12 +107,26 @@ form {
 }
 
 .chat_item_img {
-
     height: 40px;
     width: 40px;
     border-radius: 50%;
     margin-right: 10px;
     padding: 0px;
+}
+
+.chat_item_img2 {
+    height: 40px;
+    width: 40px;
+    padding: 0px;
+    margin-right: 0px;
+}
+
+.chat_item_img3 {
+    height: 25px;
+    width: 25px;
+    padding: 0px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0);
 }
 
 .chat_item:hover {
@@ -146,11 +167,52 @@ form {
     width: 50%;
 }
 
+.add_member_div {
+    background-color: rgba(192, 192, 192, 0.747);
+    border-radius: 6px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+.add_member_div input[type="text"] {
+    border: 0;
+    border-radius: 3px;
+}
+
+.add_member_div input[type="submit"] {
+    margin-bottom: 2px;
+    width: 50%;
+}
+
+.participants_div2{
+    overflow-y: auto;
+    height: 100px;
+}
+
 .participants_div{
     overflow-y: auto;
     height: 200px;
 }
 
+.group_participants2{
+    background-color: rgba(255, 255, 255, 0.422);
+    border-radius: 3px;
+    margin: 7px;
+    padding: 0;
+    display: none;
+}
+
+.no_users{
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 3px;
+}
+
+.group_participants2:hover{
+    background-color: rgba(255, 255, 255, 0.753);
+}
 .group_participants{
     background-color: rgba(255, 255, 255, 0.422);
     border-radius: 3px;
@@ -168,6 +230,44 @@ form {
 
 .highlight{
     background-color: rgba(0, 0, 0, 0.203);
+}
+
+.dropdown-item:hover{
+    background-color: rgba(0, 0, 0, 0.146);
+}
+
+.options{
+    border-radius: 8px;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+/* .options:hover{
+    background-color: rgba(0, 0, 0, 0.228);
+} */
+
+.group_options{
+    border-radius: 8px;
+}
+
+.group_options:hover{
+    background-color: rgba(0, 0, 0, 0.068);
+}
+
+.dropdownbtn{
+    background-color: rgba(0, 0, 0, 0);
+    border: 0;
+    padding: 5px;
+}
+
+.dropdownbtn:hover{
+    background-color: rgba(0, 0, 0, 0.121);
+    border-radius: 4px;
+}
+
+.options div{
+    padding: 0;
 }
 
 ::-webkit-scrollbar {

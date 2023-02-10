@@ -5,6 +5,9 @@ const group_form = document.getElementById('group_form');
 let token = localStorage.getItem('token');
 const createGroupBtn = document.getElementById('createGroupBtn');
 const participants_div = document.getElementById('participants_div');
+const add_member_searchbar = document.getElementById('add_member_searchbar');
+const show_member_searchbar = document.getElementById('show_member_searchbar');
+const show_member_div = document.getElementById('show_member_div');
 
 // if (!localStorage.getItem('messages')) {
 //     localStorage.setItem('messages', JSON.stringify([]));
@@ -13,9 +16,10 @@ localStorage.setItem("gId", "");
 document.addEventListener('DOMContentLoaded', function (e) {
     e.preventDefault();
     setInterval(() => {
-        getMessages();
+    getMessages();
     }, 1000);
     getGroups();
+    // getMessages();
 })
 // document.addEventListener('DOMContentLoaded', function (e) {
 //     setInterval(async () => {
@@ -107,7 +111,15 @@ group_form.addEventListener('submit', async function (e) {
 })
 
 participants_div.addEventListener('click', function (e) {
+    e.preventDefault();
     if (e.target.classList.contains('group_participants')) {
+        e.target.children[1].checked = !e.target.children[1].checked;
+    }
+})
+
+add_member_div.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (e.target.classList.contains('group_participants2')) {
         e.target.children[1].checked = !e.target.children[1].checked;
     }
 })
@@ -125,6 +137,12 @@ createGroupBtn.addEventListener('click', async function (e) {
         participants_div.append(div);
     }
     document.getElementById('create_group_div').classList.toggle("hide");
+    if (!document.getElementById('add_member_parentdiv').classList.contains("hide")) {
+        document.getElementById('add_member_parentdiv').classList.toggle("hide");
+    }
+    if (!document.getElementById('show_member_parentdiv').classList.toggle("hide")) {
+        document.getElementById('show_member_parentdiv').classList.toggle("hide");
+    }
 })
 
 // async function getMessages(gid) {
@@ -200,16 +218,189 @@ function close_div() {
     document.getElementById('create_group_div').classList.toggle("hide");
 }
 
+function close_div2() {
+    document.getElementById('add_member_parentdiv').classList.toggle("hide");
+}
+
+function close_div3() {
+    document.getElementById('show_member_parentdiv').classList.toggle("hide");
+}
+
+document.getElementById('add_member_form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    let temp_arr = add_member_div.children;
+    let participants_list = [];
+    let flag = false;
+    for (let i = 0; i < temp_arr.length; i++) {
+        if (temp_arr[i].children[1].checked) {
+            participants_list.push(temp_arr[i].children[1].value);
+            flag = true;
+        }
+    }
+    if (flag) {
+        try {
+            const result = await axios.post('http://localhost:4000/update-group', { gId: localStorage.getItem("gId"), participants: participants_list }, { headers: { Authorization: token } });
+            for (let i = 0; i < temp_arr.length; i++) {
+                if (temp_arr[i].children[1].checked) {
+                    temp_arr[i].children[1].checked = false;
+                }
+            }
+            document.getElementById('add_member_parentdiv').classList.toggle("hide");
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    else if (!flag) {
+        alert('Please select atleast one member');
+    }
+})
+
+async function addMember() {
+    try {
+        const add_member_div = document.getElementById('add_member_div');
+        document.getElementById('add_member_div').replaceChildren();
+        const users = await axios.get(`http://localhost:4000/non-members?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
+        if (users.data.length > 0) {
+            for (let i = 0; i < users.data.length; i++) {
+                const div = document.createElement('div');
+                div.classList.add('group_participants2', 'd-flex', 'justify-content-between');
+                div.innerHTML =
+                    `<label for="${users.data[i].id}">${users.data[i].name}</label>
+            <input type="checkbox" id="${users.data[i].id}" class="me-2" title="${users.data[i].email}" name="${users.data[i].name}" value="${users.data[i].id}">`
+                add_member_div.append(div);
+            }
+        }
+        else {
+            const div = document.createElement('div');
+            div.classList.add('no_users', 'mt-2');
+            div.innerHTML = `<h2 class="text-center">No users to add</h2>`
+            add_member_div.append(div);
+        }
+        document.getElementById('add_member_parentdiv').classList.toggle("hide");
+    } catch (err) {
+        alert("Access denied! You must be an admin to add members.");
+    }
+    if (!document.getElementById('show_member_parentdiv').classList.contains("hide")) {
+        document.getElementById('show_member_parentdiv').classList.toggle("hide");
+    }
+    if (!document.getElementById('create_group_div').classList.toggle("hide")) {
+        document.getElementById('create_group_div').classList.toggle("hide");
+    }
+}
+
+async function showMember() {
+    document.getElementById('show_member_div').replaceChildren();
+    const users = await axios.get(`http://localhost:4000/members?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
+    const div = document.createElement('div');
+    div.classList.add('group_participants2', 'd-flex', 'justify-content-between', 'mt-0', 'members');
+    div.innerHTML =
+        `<span class="me-2">You</span>
+            <span class="options d-flex align-items-center">
+        </span>`
+    show_member_div.append(div);
+    for (let i = 0; i < users.data.length; i++) {
+        const div = document.createElement('div');
+        div.classList.add('group_participants2', 'd-flex', 'justify-content-between', 'mt-0', 'members');
+        div.title = users.data[i].email;
+        div.innerHTML =
+            `<span class="me-2">${users.data[i].name}</span>
+            <span class="options d-flex align-items-center">
+            <div class="rounded mx-2">
+                <button class="dropdownbtn" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="../css/images/options.png" class="chat_item_img3">
+                </button>
+                <div class="dropdown-menu" id="${users.data[i].id}" aria-labelledby="dropdownMenuButton">
+                    <button class="dropdown-item">Make admin</button>
+                    <button class="dropdown-item">Remove member</button>
+                </div>
+            </div>
+        </span>`
+        show_member_div.append(div);
+        let makeAdmin = (div.children[1].children[0]).children[1].children[0];
+        let removeMember = (div.children[1].children[0]).children[1].children[1];
+        makeAdmin.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+                await axios.post('http://localhost:4000/make-admin', { gId: localStorage.getItem("gId"), user: (div.children[1].children[0]).children[1].id }, { headers: { Authorization: token } });
+                alert('This user is an admin now!');
+            } catch (err) {
+                if (err.response.status == '400') {
+                    alert('This user is already an admin!');
+                }
+                else if (err.response.status == '401') {
+                    alert('Access denied! You must be an admin to access this feature.');
+                }
+                else {
+                    console.log('Something went wrong');
+                }
+            }
+        })
+        removeMember.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+                await axios.post('http://localhost:4000/remove-user', { gId: localStorage.getItem("gId"), user: (div.children[1].children[0]).children[1].id }, { headers: { Authorization: token } });
+                updateUsers();
+            } catch (err) {
+                alert('Access denied! You must be an admin to access this feature.');
+            }
+        })
+    }
+    document.getElementById('show_member_parentdiv').classList.toggle("hide");
+    if (!document.getElementById('add_member_parentdiv').classList.contains("hide")) {
+        document.getElementById('add_member_parentdiv').classList.toggle("hide");
+    }
+    if (!document.getElementById('create_group_div').classList.toggle("hide")) {
+        document.getElementById('create_group_div').classList.toggle("hide");
+    }
+}
+
+async function updateUsers() {
+    const show_member_div = document.getElementById('show_member_div');
+    document.getElementById('show_member_div').replaceChildren();
+    const users = await axios.get(`http://localhost:4000/members?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
+    const div = document.createElement('div');
+    div.classList.add('group_participants2', 'd-flex', 'justify-content-between', 'mt-0', 'members');
+    div.innerHTML =
+        `<span class="me-2">You</span>
+            <span class="options d-flex align-items-center">
+        </span>`
+    show_member_div.append(div);
+    for (let i = 0; i < users.data.length; i++) {
+        const div = document.createElement('div');
+        div.classList.add('group_participants2', 'd-flex', 'justify-content-between', 'mt-0', 'members');
+        div.title = users.data[i].email;
+        div.innerHTML =
+            `<span class="me-2">${users.data[i].name}</span>
+            <span class="options d-flex align-items-center">
+            <div class="rounded mx-2">
+                <button class="dropdownbtn" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="../css/images/options.png" class="chat_item_img3">
+                </button>
+                <div class="dropdown-menu" id="${users.data[i].id}" aria-labelledby="dropdownMenuButton">
+                    <button class="dropdown-item">Make admin</button>
+                    <button class="dropdown-item">Remove member</button>
+                </div>
+            </div>
+        </span>`
+        show_member_div.append(div);
+    }
+}
+
 async function getGroups() {
     const groups = await axios.get('http://localhost:4000/groups', { headers: { Authorization: token } });
     const chat_div = document.getElementById('chat_div');
     let current = null;
+    const group_header = document.getElementById('group_header');
     chat_div.replaceChildren();
     for (let i = 0; i < groups.data.length; i++) {
         const div = document.createElement('div');
-        div.classList.add('chat_item');
+        div.classList.add('chat_item', 'd-flex', 'justify-content-between', 'align-items-center');
         div.id = groups.data[i].id;
-        div.innerHTML = `<img src="../css/images/group.png" class="chat_item_img">${groups.data[i].name}`
+        div.name = groups.data[i].name;
+        div.innerHTML = `<span><img src="../css/images/group.png" class="chat_item_img">${groups.data[i].name}</span><span class="group_options p-3"><img src="../css/images/options.png" class="chat_item_img3"></span>`
         chat_div.append(div);
         div.addEventListener('click', async function (e) {
             e.preventDefault();
@@ -220,7 +411,76 @@ async function getGroups() {
             this.classList.add('highlight');
             myform.parentElement.classList.remove('hide');
             localStorage.setItem("gId", `${div.id}`);
+            group_header.replaceChildren();
+            group_header.innerHTML =
+                `<div class="px-2 py-0 w-100 text-white fw-bold rounded d-flex justify-content-between">
+                            <span>
+                                <img src="../css/images/group.png" class="chat_item_img2">
+                                <span>${div.name}</span>
+                            </span>
+                            <span class="options d-flex align-items-center">
+                                <!-- <img src="../css/images/options.png" class="chat_item_img3"> -->
+                                <div class="rounded mx-2">
+                                    <button class="dropdownbtn" type="button" id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="../css/images/options.png" class="chat_item_img3">
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <button class="dropdown-item text-white" onclick="addMember()">Add members</button>
+                                        <button class="dropdown-item text-white" onclick="showMember()">Show members</button>
+                                    </div>
+                                </div>
+                            </span>
+                        </div>`
             getMessages();
+            if (!document.getElementById('add_member_parentdiv').classList.contains("hide")) {
+                document.getElementById('add_member_parentdiv').classList.toggle("hide");
+            }
+            if (!document.getElementById('show_member_parentdiv').classList.toggle("hide")) {
+                document.getElementById('show_member_parentdiv').classList.toggle("hide");
+            }
+            if (!document.getElementById('create_group_div').classList.toggle("hide")) {
+                document.getElementById('create_group_div').classList.toggle("hide");
+            }
         })
     }
 }
+
+add_member_searchbar.addEventListener('input', function (e) {
+    const filter = add_member_searchbar.value.toLowerCase();
+    const resultElements = add_member_div.getElementsByTagName("div");
+    // console.log(resultElements[0].children[0].textContent)
+    for (let i = 0; i < resultElements.length; i++) {
+        const result = resultElements[i];
+        if (result.children[0].textContent.toLowerCase().indexOf(filter) > -1) {
+            result.children[0].style.display = "";
+            result.children[1].style.display = "";
+        } else {
+            result.children[0].style.display = "none";
+            result.children[1].style.display = "none";
+        }
+    }
+})
+
+show_member_searchbar.addEventListener('input', function (e) {
+    const filter = show_member_searchbar.value.toLowerCase();
+    const resultElements = show_member_div.getElementsByClassName("members");
+    // console.log(resultElements[0])
+    // for(let i=0; i<resultElements.length; i++){
+    //     console.log(resultElements[i])
+    // }
+    // console.log(resultElements.length)
+    // console.log(resultElements[0].children[0].textContent)
+    for (let i = 1; i < resultElements.length; i++) {
+        const result = resultElements[i];
+        // console.log(result.children[0])
+        // console.log(result.children[1].children[0])
+        if (result.children[0].textContent.toLowerCase().indexOf(filter) > -1) {
+            result.children[0].style.display = "";
+            result.children[1].children[0].style.display = "";
+        } else {
+            result.children[0].style.display = "none";
+            result.children[1].children[0].style.display = "none";
+        }
+    }
+})

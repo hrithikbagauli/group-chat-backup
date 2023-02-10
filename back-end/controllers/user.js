@@ -68,9 +68,9 @@ exports.getUsers = async (req, res, next) => {
 exports.createGroup = async (req, res, next) => {
   try {
     const group_details = await Group.create({ name: req.body.groupname });
-    await UserGroup.create({ groupId: group_details.id, userId: req.user.id, isAdmin: true});
+    await UserGroup.create({ groupId: group_details.id, userId: req.user.id, isAdmin: true });
     req.body.participants.forEach(async (participant) => {
-      await UserGroup.create({ groupId: group_details.id, userId: participant, isAdmin: false});
+      await UserGroup.create({ groupId: group_details.id, userId: participant, isAdmin: false });
     })
     res.status(200).json({ success: true });
   } catch (err) {
@@ -81,17 +81,120 @@ exports.createGroup = async (req, res, next) => {
 exports.getGroups = async (req, res, next) => {
   let groups_arr = [];
   const groups = await UserGroup.findAll({
-    where: {userId: req.user.id},
+    where: { userId: req.user.id },
   })
-  
-  async function loop(){
-    for(let i=0; i<groups.length; i++){
+
+  async function loop() {
+    for (let i = 0; i < groups.length; i++) {
       const group = await Group.findByPk(groups[i].groupId);
-      groups_arr.push({name: group.name, id: group.id});
+      groups_arr.push({ name: group.name, id: group.id });
     }
   }
   await loop();
   res.json(groups_arr);
+}
+
+exports.updateGroup = async (req, res, next) => {
+  try {
+    req.body.participants.forEach(async (participant) => {
+      await UserGroup.create({ groupId: req.body.gId, userId: participant, isAdmin: false });
+      res.status(200).json("success");
+    })
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// exports.getParticipants = async (req, res, next)=>{
+//   const group_id = req.query.gId;
+//   let users_arr = [];
+//   const users = await UserGroup.findAll({where: {groupId: group_id}});
+
+//   async function loop(){
+//     for(let i=0; i<users.length; i++){
+//       const user = await User.findByPk(users[i].userId);
+//       users_arr.push({name: user.name, id: user.id});
+//     }
+//   }
+//   await loop();
+//   res.json(users_arr);
+// }
+
+exports.getNonMembers = async (req, res, next) => {
+  const group_id = req.query.gId;
+  let users_arr = [];
+  const user = await UserGroup.findAll({ where: { userId: req.user.id, groupId: group_id } });
+  if (user[0].isAdmin) {
+    const users = await User.findAll({ attributes: ['id', 'name', 'email'] });
+    async function loop() {
+      for (let i = 0; i < users.length; i++) {
+        const user = await UserGroup.findAll({ where: { userId: users[i].id, groupId: group_id } });
+        if (user.length == 0) {
+          users_arr.push({ name: users[i].name, id: users[i].id, email: users[i].email });
+        }
+      }
+    }
+    await loop();
+    res.status(200).json(users_arr);
+  }
+  else {
+    res.status(401).json({ success: false });
+  }
+}
+
+exports.getMembers = async (req, res, next) => {
+  const group_id = req.query.gId;
+  let users_arr = [];
+  const users = await User.findAll({ where: { id: { [Op.not]: req.user.id } }, attributes: ['id', 'name', 'email'] });
+  async function loop() {
+    for (let i = 0; i < users.length; i++) {
+      const user = await UserGroup.findAll({ where: { userId: users[i].id, groupId: group_id } });
+      if (user.length > 0) {
+        users_arr.push({ name: users[i].name, id: users[i].id, email: users[i].email });
+      }
+    }
+  }
+  await loop();
+  res.json(users_arr);
+}
+
+exports.makeAdmin = async (req, res, next) => {
+  try {
+    const req_user = await UserGroup.findAll({ where: { groupId: req.body.gId, userId: req.user.id } });
+    if (req_user[0].isAdmin) {
+      const user = await UserGroup.findAll({ where: { groupId: req.body.gId, userId: req.body.user } });
+      if (!user[0].isAdmin) {
+        await UserGroup.update({ isAdmin: true }, { where: { groupId: req.body.gId, userId: req.body.user } });
+        res.status(200).json({ success: true });
+      }
+      else {
+        res.status(400).json({ success: false, message: 'This user is already an admin!' });
+      }
+    }
+    else {
+      res.status(401).json({ success: false, message: 'Access denied! You must be an admin to make others admin.' })
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json('Something went wrong');
+  }
+}
+
+exports.removeUser = async (req, res, next) => {
+  try {
+    const req_user = await UserGroup.findAll({ where: { groupId: req.body.gId, userId: req.user.id } });
+    if (req_user[0].isAdmin) {
+      const user = await UserGroup.findAll({ where: { groupId: req.body.gId, userId: req.body.user } });
+      user[0].destroy();
+      res.status(200).json({ success: true });
+    }
+    else{
+      res.status(401).json({success: false});
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false });
+  }
 }
 
 function generateToken(id, user) {
