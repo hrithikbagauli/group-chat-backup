@@ -2,11 +2,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 const Message = require('../models/message');
 const User = require('../models/user');
-const {Op} = require('sequelize');
+const { Op } = require('sequelize');
 
 exports.postSendMessage = async (req, res, next) => {
     try {
-        await req.user.createMessage({ message: req.body.message, groupId: req.body.gId});
+        await req.user.createMessage({ message: req.body.message, groupId: req.body.gId });
         res.json({ success: true });
     } catch (err) {
         console.log(err)
@@ -40,7 +40,8 @@ exports.getMessages = async (req, res, next) => {
     try {
         const messages = await Message.findAll({
             where: {
-                groupId: req.query.gId
+                groupId: req.query.gId,
+                id: {[Op.gt]: req.query.last_message_id}
             },
             include: { model: User, attributes: ['name', 'createdAt'] }
         });

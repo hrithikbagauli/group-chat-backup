@@ -72,7 +72,7 @@ exports.createGroup = async (req, res, next) => {
     req.body.participants.forEach(async (participant) => {
       await UserGroup.create({ groupId: group_details.id, userId: participant, isAdmin: false });
     })
-    res.status(200).json({ success: true });
+    res.status(200).json({group_details});
   } catch (err) {
     console.log(err);
   }

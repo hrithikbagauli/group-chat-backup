@@ -15,11 +15,10 @@ const show_member_div = document.getElementById('show_member_div');
 localStorage.setItem("gId", "");
 document.addEventListener('DOMContentLoaded', function (e) {
     e.preventDefault();
-    setInterval(() => {
-    getMessages();
-    }, 1000);
+    // setInterval(() => {
+    //     getMessages();
+    // }, 1000);
     getGroups();
-    // getMessages();
 })
 // document.addEventListener('DOMContentLoaded', function (e) {
 //     setInterval(async () => {
@@ -70,6 +69,7 @@ myform.addEventListener('submit', async function (e) {
     try {
         if (message_input.value != '') {
             await axios.post('http://localhost:4000/send-message', { message: message_input.value, gId: localStorage.getItem('gId') }, { headers: { Authorization: token } });
+            await updateLS();
             getMessages();
             updateScroll();
             message_input.value = '';
@@ -92,7 +92,7 @@ group_form.addEventListener('submit', async function (e) {
         }
     }
     if (flag && groupname.value != '') {
-        await axios.post('http://localhost:4000/create-group', { groupname: groupname.value, participants: participants_list }, { headers: { Authorization: token } });
+        const group = await axios.post('http://localhost:4000/create-group', { groupname: groupname.value, participants: participants_list }, { headers: { Authorization: token } });
         document.getElementById('create_group_div').classList.toggle("hide");
         getGroups();
         groupname.value = '';
@@ -101,6 +101,7 @@ group_form.addEventListener('submit', async function (e) {
                 temp_arr[i].children[1].checked = false;
             }
         }
+        localStorage.setItem(group.data.group_details.id, JSON.stringify([]));
     }
     else if (!flag) {
         alert('Please select atleast one member for the group');
@@ -128,12 +129,20 @@ createGroupBtn.addEventListener('click', async function (e) {
     e.preventDefault();
     participants_div.replaceChildren();
     const users = await axios.get('http://localhost:4000/users', { headers: { Authorization: token } });
-    for (let i = 0; i < users.data.length; i++) {
+    if (users.data.length > 0) {
+        for (let i = 0; i < users.data.length; i++) {
+            const div = document.createElement('div');
+            div.classList.add('group_participants', 'd-flex', 'justify-content-between');
+            div.innerHTML =
+                `<label for="${users.data[i].id}">${users.data[i].name}</label>
+            <input type="checkbox" class="me-2" id="${users.data[i].id}" name="${users.data[i].name}" value="${users.data[i].id}">`
+            participants_div.append(div);
+        }
+    }
+    else {
         const div = document.createElement('div');
-        div.classList.add('group_participants', 'd-flex', 'justify-content-between');
-        div.innerHTML =
-            `<label for="${users.data[i].id}">${users.data[i].name}</label>
-        <input type="checkbox" class="me-2" id="${users.data[i].id}" name="${users.data[i].name}" value="${users.data[i].id}">`
+        div.classList.add('d-flex', 'justify-content-center', 'fw-bold', 'align-items-center', 'm-0', 'h-100');
+        div.innerHTML = `<span>NO USERS YET</span>`
         participants_div.append(div);
     }
     document.getElementById('create_group_div').classList.toggle("hide");
@@ -169,31 +178,64 @@ createGroupBtn.addEventListener('click', async function (e) {
 //     }
 // }
 
-async function getMessages() {
-    const messages = await axios.get(`http://localhost:4000/get-messages?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
+function getMessages() {
+    try {
+        const group = localStorage.getItem("gId");
+        let arr = JSON.parse(localStorage.getItem(group));
+        if (arr.length > 10) {
+            for (let i = 0; i < arr.length / 2; i++) {
+                arr.shift();
+                localStorage.setItem(group, JSON.stringify(arr));
+            }
+        }
+        message_div.replaceChildren();
+        if (arr.length > 0) {
+            for (let i = 0; i < arr.length; i++) {
+                const div = document.createElement('div');
+                let time = convertTime(arr[i].createdAt);
+                if (arr[i].user.name == localStorage.getItem('username')) {
+                    div.classList.add('d-flex', 'p-0', 'w-100', 'justify-content-end', 'pe-2')
+                    div.innerHTML =
+                        `<span class="wrap bg-primary text-white my-2 pb-0 rounded">
+            ${arr[i].message}
+            <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">${time}</span></div>
+            </span>`
+                }
+                else {
+                    div.classList.add('d-flex', 'justify-content-start', 'p-0', 'w-100', 'mt-2');
+                    div.innerHTML =
+                        `<span class="wrap bg-light rounded pb-0">
+            <div class="p-0 fw-bold"><span class="p-0">${arr[i].user.name}</span></div>
+            ${arr[i].message} 
+            <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">${time}</span></div>
+            </span>`
+                }
+                message_div.append(div);
+            }
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
 
-    message_div.replaceChildren();
-    for (let i = 0; i < messages.data.length; i++) {
-        const div = document.createElement('div');
-        let time = convertTime(messages.data[i].createdAt);
-        if (messages.data[i].user.name == localStorage.getItem('username')) {
-            div.classList.add('d-flex', 'p-0', 'w-100', 'justify-content-end', 'pe-2')
-            div.innerHTML =
-                `<span class="wrap bg-primary text-white my-2 pb-0 rounded">
-                ${messages.data[i].message}
-                <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">${time}</span></div>
-                </span>`
+async function updateLS() {
+    let last_message_id;
+    let group = localStorage.getItem("gId");
+    if (group != "") {
+        let arr = JSON.parse(localStorage.getItem(group));
+        let messages_arr;
+        if (arr.length == 0) {
+            last_message_id = 0;
+            const messages = await axios.get(`http://localhost:4000/get-messages?gId=${localStorage.getItem("gId")}&last_message_id=${last_message_id}`, { headers: { Authorization: token } });
+            messages_arr = arr.concat(messages.data);
+            localStorage.setItem(group, JSON.stringify(messages_arr));
         }
         else {
-            div.classList.add('d-flex', 'justify-content-start', 'p-0', 'w-100', 'mt-2');
-            div.innerHTML =
-                `<span class="wrap bg-light rounded pb-0">
-                <div class="p-0 fw-bold"><span class="p-0">${messages.data[i].user.name}</span></div>
-                ${messages.data[i].message} 
-                <div class="p-0 m-0 d-flex justify-content-end"><span class="p-0 m-0 fw-bold">${time}</span></div>
-                </span>`
+            last_message_id = arr[arr.length - 1].id;
+            const messages = await axios.get(`http://localhost:4000/get-messages?gId=${localStorage.getItem("gId")}&last_message_id=${last_message_id}`, { headers: { Authorization: token } });
+            messages_arr = arr.concat(messages.data);
+            localStorage.setItem(group, JSON.stringify(messages_arr));
         }
-        message_div.append(div);
     }
 }
 
@@ -396,6 +438,9 @@ async function getGroups() {
     const group_header = document.getElementById('group_header');
     chat_div.replaceChildren();
     for (let i = 0; i < groups.data.length; i++) {
+        if (!localStorage.getItem(groups.data[i].id)) {
+            localStorage.setItem(groups.data[i].id, JSON.stringify([]));
+        }
         const div = document.createElement('div');
         div.classList.add('chat_item', 'd-flex', 'justify-content-between', 'align-items-center');
         div.id = groups.data[i].id;
@@ -432,7 +477,12 @@ async function getGroups() {
                                 </div>
                             </span>
                         </div>`
+            await updateLS();
             getMessages();
+            setInterval(async () => {
+                await updateLS();
+                getMessages();
+            }, 1000);
             if (!document.getElementById('add_member_parentdiv').classList.contains("hide")) {
                 document.getElementById('add_member_parentdiv').classList.toggle("hide");
             }

@@ -197,12 +197,22 @@ form {
     height: 200px;
 }
 
+.messaging_area{
+    background-color: rgba(255, 255, 255, 0.578);
+    padding: 50px;
+    border-radius: 10px;
+}
+
 .group_participants2{
     background-color: rgba(255, 255, 255, 0.422);
     border-radius: 3px;
     margin: 7px;
     padding: 0;
     display: none;
+}
+
+.messaging_area_heading{
+    font-size: 60px;
 }
 
 .no_users{
@@ -298,6 +308,10 @@ form {
         height: 40px;
         width: 40px;
     }
+
+    .messaging_area_heading{
+        font-size: 30px;
+    }
 }
 
 @media (max-width: 600px) {
@@ -316,6 +330,10 @@ form {
         padding-left: 7px;
         padding-top: 0;
         padding-bottom: 0;
+    }
+
+    .messaging_area_heading{
+        font-size: 10px;
     }
 }
 

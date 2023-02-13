@@ -43,7 +43,7 @@ User.hasMany(forgotPasswordRequests);
 forgotPasswordRequests.belongsTo(User);
 
 Group.hasMany(Message);
-Message.belongsTo(Group);
+Message.belongsTo(Group, { constraints: true, onDelete: 'CASCADE' });
 
 Group.belongsToMany(User, {through: UserGroup});
 User.belongsToMany(Group, {through: UserGroup});
