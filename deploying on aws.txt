@@ -1,0 +1,52 @@
+what is a server?
+
+its like your laptop, but without a graphical user interface. It just has a terminal where you can run code.
+
+it usually uses Linux OS or Ubuntu OS.
+
+Our laptops have a lot of firewalls so its very difficult to get inside our laptops. Servers, on the other hand have a different mechanism that allows others to get inside the server i.e. we open up ports of the server to get inside the server.
+
+
+
+We use security groups to open up ports. There are two ways of allowing traffic into our server. One would be to open up all the ports which is clearly not a good idea. The other way is to use a security group and allow only a few ports to be opened. 
+
+
+
+Steps to deploy on AWS - 
+
+1. move all the secrets to the .env file.
+2. Configuring your server:-
+	Install node 
+	install git
+	
+3. running sql server on a different server.
+4. get your code from github, clone it.
+
+
+
+Commands used in deployment - 
+
+to install node :-
+
+1. sudo su
+2. curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -
+3. yum -y install nodejs
+
+
+to install git :-
+
+1. sudo yum install git -y
+
+
+to clone your git repo:-
+
+git clone url_of_your_git_repo_here
+
+
+After cloning your git repo, go to the folder which has the package.json file and run "npm i" or "npm install" to install all the packages mentioned in the package.json file.
+
+
+To connect the ec2 instance to RDS, we have to connect the security group of ec2 to the security group of RDS.
+
+REMEMBER: when setting up a connection in mysql workbench, always use .pem file because .ppk doesn't work.
+

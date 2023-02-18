@@ -6,24 +6,96 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login page</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     <link rel="stylesheet" href="../css/chat.css">
 </head>
 
 <body>
     <div class="w-100 h-100">
         <div class="main-container w-100 h-100 d-flex justify-content-between p-0">
-            <div class="w-25 h-100 bg-white rounded-start">
-                <ul class="w-100 h-100 bg-white">
-                    <!-- <h3 class="text-center display-6">Online users</h3>
-                    <li><span class="online">⬤</span>Jack</li> -->
-                </ul>
+            <div class="w-25 bg-white rounded-start p-0">
+                <div class="d-flex justify-content-between p-0 chat_title_div"><span
+                        class="fs-4 d-flex align-items-center">Chats</span><span class="d-flex align-items-center"><img
+                            id="createGroupBtn" class="edit_icon p-2" src="../css/images/edit_icon.png"></span>
+                </div>
+                <div id="chat_div" class="overflow chat_div p-0 m-0">
+                    <!-- <div class="chat_item"><img src="../css/images/group.png" class="chat_item_img"> one</div> -->
+                </div>
             </div>
-            <div class="w-100 h-100 p-0">
-                <div class="message_area w-100 h-100 parent rounded-end pt-1">
-                    <div id="joined" class="top w-100 p-0 m-0">
-                        <!-- <div class="text-center p-0"><span class="badge fw-normal bg-secondary">Hrithik joined</span></div> -->
+            <div id="create_group_div" class="create_group_div hide">
+                <div class="d-flex justify-content-end  p-0"><button onclick="close_div()"
+                        class="btn btn-danger px-2 py-0">x</button></div>
+                <h1 class="text-center fs-3 fw-bold p-0">Create group</h1>
+                <form id="group_form">
+                    <label for="group_name">Enter a name for the group:</label>
+                    <input type="text" name="group_name"><br><br>
+                    <div id="participants_div" class="p-0 m-0 participants_div">
+                        <!-- <div class="group_participants d-flex justify-content-between">
+                            <span>One</span>
+                            <input type="checkbox" class="me-2" name="One" value="One">
+                        </div> -->
+                    </div>
+
+                    <div class="text-center"><input type="submit" value="Create" class="btn btn-secondary"></div>
+                </form>
+            </div>
+            <div id="add_member_parentdiv" class="add_member_div hide">
+                <div class="d-flex justify-content-end p-0"><button onclick="close_div2()"
+                        class="btn btn-danger px-2 py-0">x</button></div>
+                <h1 class="text-center fs-3 fw-bold p-0">Add members</h1>
+                <form id="add_member_form">
+                    <label for="searchbar">Search user:</label>
+                    <input type="text" id="add_member_searchbar" name="searchbar"><br><br>
+                    <div id="add_member_div" class="p-0 m-0 participants_div2">
+                    </div>
+                    <div class="text-center"><input type="submit" value="Add members" class="btn btn-secondary"></div>
+                </form>
+            </div>
+            <div id="show_member_parentdiv" class="add_member_div hide">
+                <div class="d-flex justify-content-end p-0"><button onclick="close_div3()"
+                        class="btn btn-danger px-2 py-0">x</button></div>
+                <h1 class="text-center fs-3 fw-bold p-0">Members</h1>
+                <form id="show_member_form">
+                    <label for="searchbar">Search user:</label>
+                    <!-- <input type="text" class="p-1" name="searchbar"><br><br> -->
+                    <input type="text" id="show_member_searchbar" name="searchbar"><br><br>
+                    <div id="show_member_div" class="p-0 m-0 participants_div2">
+                    </div>
+                    <!-- <div class="text-center"><input type="submit" value="Show members" class="btn btn-secondary"></div> -->
+                </form>
+            </div>
+            <div class="w-75 h-100 p-0 m-0">
+                <div class="message_area w-100 h-100 parent rounded-end pt-2">
+                    <div id="group_header" class="top">
+                        <!-- <div class="px-2 py-0 w-100 text-white fw-bold rounded"><img src="../css/images/group.png"
+                                class="chat_item_img2">HELLO</div> -->
+                        <!-- <div class="px-2 py-0 w-100 text-white fw-bold rounded d-flex justify-content-between">
+                            <span>
+                                <img src="../css/images/group.png" class="chat_item_img2">
+                                <span>helloo</span>
+                            </span>
+                            <span class="options d-flex align-items-center">
+                                 <img src="../css/images/options.png" class="chat_item_img3">
+                                <div class="rounded mx-2">
+                                    <button class="dropdownbtn" type="button" id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="../css/images/options.png" class="chat_item_img3">
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <button class="dropdown-item text-white" onclick="addParticipant()">Add participants</button>
+                                        <button class="dropdown-item text-white" onclick="showParticipants()">Show participants</button>
+                                        <button class="dropdown-item text-white" onclick="removeParticipants()">Remove participants</button>
+                                    </div>
+                                </div>
+                            </span>
+                        </div> -->
+
                     </div>
 
                     <div id="message_div" class="middle p-0 mt-2">
@@ -44,9 +116,11 @@
                         </div> -->
                     </div>
 
-                    <div class="w-100">
-                        <form id="myform" class="bottom w-100 d-flex justify-content-between" style="border-bottom-right-radius: 4px;">
-                            <input class="message w-100 px-5" placeholder="Write something here..." type="text" name="message">
+                    <div class="w-100 p-0 hide">
+                        <form id="myform" class="bottom pb-0 w-100 d-flex justify-content-between"
+                            style="border-bottom-right-radius: 20px;">
+                            <input class="message w-100 px-5" placeholder="Write something here..." type="text"
+                                name="message">
                             <input class="btn btn-primary ms-2 border-0 sendbtn" type="submit" value="➣">
                         </form>
                     </div>
@@ -55,11 +129,8 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
     <script src="../js/chat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 
 </html>

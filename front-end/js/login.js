@@ -16,7 +16,7 @@ myform.addEventListener('submit', function (e) {
         }, 2000);
     }
     else {
-        axios.post('http://localhost:4000/user-login', { password: password.value, email: email.value })
+        axios.post('http://13.231.254.75:4000/user-login', { password: password.value, email: email.value })
             .then(res => {
                 alert_div.innerHTML = res.data.message;
                 alert_div.classList.add('alert-success');

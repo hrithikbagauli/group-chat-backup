@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
 //     setInterval(async () => {
 //         try {
 //             getMessages();
-//             // const users = await axios.get('http://localhost:4000/online-user');
+//             // const users = await axios.get('http://13.231.254.75:4000/online-user');
 //             // joined_div.replaceChildren();
 //             // for (let i = 0; i < users.data.length; i++) {
 //             //     const div = document.createElement('div');
@@ -68,7 +68,7 @@ myform.addEventListener('submit', async function (e) {
     e.preventDefault();
     try {
         if (message_input.value != '') {
-            await axios.post('http://localhost:4000/send-message', { message: message_input.value, gId: localStorage.getItem('gId') }, { headers: { Authorization: token } });
+            await axios.post('http://13.231.254.75:4000/send-message', { message: message_input.value, gId: localStorage.getItem('gId') }, { headers: { Authorization: token } });
             await updateLS();
             getMessages();
             updateScroll();
@@ -92,7 +92,7 @@ group_form.addEventListener('submit', async function (e) {
         }
     }
     if (flag && groupname.value != '') {
-        const group = await axios.post('http://localhost:4000/create-group', { groupname: groupname.value, participants: participants_list }, { headers: { Authorization: token } });
+        const group = await axios.post('http://13.231.254.75:4000/create-group', { groupname: groupname.value, participants: participants_list }, { headers: { Authorization: token } });
         document.getElementById('create_group_div').classList.toggle("hide");
         getGroups();
         groupname.value = '';
@@ -128,7 +128,7 @@ add_member_div.addEventListener('click', function (e) {
 createGroupBtn.addEventListener('click', async function (e) {
     e.preventDefault();
     participants_div.replaceChildren();
-    const users = await axios.get('http://localhost:4000/users', { headers: { Authorization: token } });
+    const users = await axios.get('http://13.231.254.75:4000/users', { headers: { Authorization: token } });
     if (users.data.length > 0) {
         for (let i = 0; i < users.data.length; i++) {
             const div = document.createElement('div');
@@ -167,7 +167,7 @@ createGroupBtn.addEventListener('click', async function (e) {
 //                 localStorage.setItem('messages', JSON.stringify(old_messages));
 //             }
 //         }
-//         const result = await axios.get(`http://localhost:4000/get-messages?id=${last_message_id}&gid=${gid}`, { headers: { Authorization: token } });
+//         const result = await axios.get(`http://13.231.254.75:4000/get-messages?id=${last_message_id}&gid=${gid}`, { headers: { Authorization: token } });
 //         if (result.data.length > 0) {
 //             let new_messages = old_messages.concat(result.data);
 //             localStorage.setItem('messages', JSON.stringify(new_messages));
@@ -226,13 +226,13 @@ async function updateLS() {
         let messages_arr;
         if (arr.length == 0) {
             last_message_id = 0;
-            const messages = await axios.get(`http://localhost:4000/get-messages?gId=${localStorage.getItem("gId")}&last_message_id=${last_message_id}`, { headers: { Authorization: token } });
+            const messages = await axios.get(`http://13.231.254.75:4000/get-messages?gId=${localStorage.getItem("gId")}&last_message_id=${last_message_id}`, { headers: { Authorization: token } });
             messages_arr = arr.concat(messages.data);
             localStorage.setItem(group, JSON.stringify(messages_arr));
         }
         else {
             last_message_id = arr[arr.length - 1].id;
-            const messages = await axios.get(`http://localhost:4000/get-messages?gId=${localStorage.getItem("gId")}&last_message_id=${last_message_id}`, { headers: { Authorization: token } });
+            const messages = await axios.get(`http://13.231.254.75:4000/get-messages?gId=${localStorage.getItem("gId")}&last_message_id=${last_message_id}`, { headers: { Authorization: token } });
             messages_arr = arr.concat(messages.data);
             localStorage.setItem(group, JSON.stringify(messages_arr));
         }
@@ -281,7 +281,7 @@ document.getElementById('add_member_form').addEventListener('submit', async func
     }
     if (flag) {
         try {
-            const result = await axios.post('http://localhost:4000/update-group', { gId: localStorage.getItem("gId"), participants: participants_list }, { headers: { Authorization: token } });
+            const result = await axios.post('http://13.231.254.75:4000/update-group', { gId: localStorage.getItem("gId"), participants: participants_list }, { headers: { Authorization: token } });
             for (let i = 0; i < temp_arr.length; i++) {
                 if (temp_arr[i].children[1].checked) {
                     temp_arr[i].children[1].checked = false;
@@ -302,7 +302,7 @@ async function addMember() {
     try {
         const add_member_div = document.getElementById('add_member_div');
         document.getElementById('add_member_div').replaceChildren();
-        const users = await axios.get(`http://localhost:4000/non-members?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
+        const users = await axios.get(`http://13.231.254.75:4000/non-members?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
         if (users.data.length > 0) {
             for (let i = 0; i < users.data.length; i++) {
                 const div = document.createElement('div');
@@ -333,7 +333,7 @@ async function addMember() {
 
 async function showMember() {
     document.getElementById('show_member_div').replaceChildren();
-    const users = await axios.get(`http://localhost:4000/members?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
+    const users = await axios.get(`http://13.231.254.75:4000/members?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
     const div = document.createElement('div');
     div.classList.add('group_participants2', 'd-flex', 'justify-content-between', 'mt-0', 'members');
     div.innerHTML =
@@ -365,7 +365,7 @@ async function showMember() {
         makeAdmin.addEventListener('click', async function (e) {
             e.preventDefault();
             try {
-                await axios.post('http://localhost:4000/make-admin', { gId: localStorage.getItem("gId"), user: (div.children[1].children[0]).children[1].id }, { headers: { Authorization: token } });
+                await axios.post('http://13.231.254.75:4000/make-admin', { gId: localStorage.getItem("gId"), user: (div.children[1].children[0]).children[1].id }, { headers: { Authorization: token } });
                 alert('This user is an admin now!');
             } catch (err) {
                 if (err.response.status == '400') {
@@ -382,7 +382,7 @@ async function showMember() {
         removeMember.addEventListener('click', async function (e) {
             e.preventDefault();
             try {
-                await axios.post('http://localhost:4000/remove-user', { gId: localStorage.getItem("gId"), user: (div.children[1].children[0]).children[1].id }, { headers: { Authorization: token } });
+                await axios.post('http://13.231.254.75:4000/remove-user', { gId: localStorage.getItem("gId"), user: (div.children[1].children[0]).children[1].id }, { headers: { Authorization: token } });
                 updateUsers();
             } catch (err) {
                 alert('Access denied! You must be an admin to access this feature.');
@@ -401,7 +401,7 @@ async function showMember() {
 async function updateUsers() {
     const show_member_div = document.getElementById('show_member_div');
     document.getElementById('show_member_div').replaceChildren();
-    const users = await axios.get(`http://localhost:4000/members?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
+    const users = await axios.get(`http://13.231.254.75:4000/members?gId=${localStorage.getItem("gId")}`, { headers: { Authorization: token } });
     const div = document.createElement('div');
     div.classList.add('group_participants2', 'd-flex', 'justify-content-between', 'mt-0', 'members');
     div.innerHTML =
@@ -432,7 +432,7 @@ async function updateUsers() {
 }
 
 async function getGroups() {
-    const groups = await axios.get('http://localhost:4000/groups', { headers: { Authorization: token } });
+    const groups = await axios.get('http://13.231.254.75:4000/groups', { headers: { Authorization: token } });
     const chat_div = document.getElementById('chat_div');
     let current = null;
     const group_header = document.getElementById('group_header');

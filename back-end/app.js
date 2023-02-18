@@ -29,12 +29,15 @@ dotenv.config();
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
-  origin: 'null', 
+  origin: 'null',
   methods: ["GET", "POST"]
 }));
 app.use(userRoutes);
 app.use(messageRoutes);
 app.use('/password', passwordRoutes);
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, `public/html/${req.url}`))
+})
 
 User.hasMany(Message);
 Message.belongsTo(User);
@@ -45,17 +48,17 @@ forgotPasswordRequests.belongsTo(User);
 Group.hasMany(Message);
 Message.belongsTo(Group, { constraints: true, onDelete: 'CASCADE' });
 
-Group.belongsToMany(User, {through: UserGroup});
-User.belongsToMany(Group, {through: UserGroup});
+Group.belongsToMany(User, { through: UserGroup });
+User.belongsToMany(Group, { through: UserGroup });
 
 sequelize
-.sync()
-// .sync({force: true})
-.then(()=>{
-  app.listen(parseInt(process.env.PORT_NO));
-}
-)
-.catch(err => {
-  console.log(err);
-});
+  .sync()
+  // .sync({force: true})
+  .then(() => {
+    app.listen(parseInt(process.env.PORT_NO));
+  }
+  )
+  .catch(err => {
+    console.log(err);
+  });
 
