@@ -1,0 +1,1 @@
+removeInnerObjects({name:"siva",address:{state:"ap",capital:"amaravathi",mandal:"Atchampeta"},education:{ssc:"jaibharat",inter:"lalitha",btech:"KL University"}});
